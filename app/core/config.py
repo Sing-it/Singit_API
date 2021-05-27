@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     SERVER_HOST: str = os.getenv("SERVER_HOST")
 
     SECRET_KEY: str = os.getenv("JWT_SECRET_KEY") or secrets.token_urlsafe(32)
-    ALGORITHM = "HS256"
+    ALGORITHM: str = os.getenv("JWT_ALGORITHM")
 
     MODE: bool = os.getenv("MODE")
 
