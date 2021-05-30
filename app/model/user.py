@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, Integer, Text, DateTime
+from sqlalchemy import Column, String, Text, DateTime
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 
@@ -8,10 +9,11 @@ DEFAULT_PROFILE_IMAGE = "https://image.shutterstock.com/image-vector/user-icon-t
 
 
 class User(Base):
-    id = Column(Integer, autoincrement=True, primary_key=True)
     email = Column(String(100), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
     nickname = Column(String(100), nullable=False, unique=False)
     profile_image = Column(Text, default=DEFAULT_PROFILE_IMAGE)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    user_artist = relationship("UserArtist", uselist=False, back_populates="User")
