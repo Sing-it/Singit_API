@@ -17,3 +17,15 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     user_artist = relationship("UserArtist", uselist=False, back_populates="User")
+
+    def __repr__(self) -> str:
+        return "<{}(id='{}', email='{}', password='{}', nickname='{}', profile_image='{}', created_at='{}', updated_at='{}')>".format(
+            self.__name__,
+            self.id,
+            self.email,
+            self.password,
+            self.nickname,
+            self.profile_image,
+            self.created_at,
+            self.updated_at,
+        )

@@ -7,7 +7,6 @@ DEFAULT_ARTIST_IMAGE = "https://image.shutterstock.com/image-vector/user-icon-tr
 
 
 class Artist(Base):
-
     name = Column(String(50), nullable=False)
     introduction = Column(String(500), nullable=True)
     profile_image = Column(Text, default=DEFAULT_ARTIST_IMAGE)
@@ -15,6 +14,17 @@ class Artist(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     org_artist = relationship("OrgArtist", uselist=False, back_populates="Artist")
+
+    def __repr__(self) -> str:
+        return "<{}(id='{}', name='{}', introduction='{}', profile_image='{}', created_at='{}', updated_at='{}')>".format(
+            self.__name__,
+            self.id,
+            self.name,
+            self.introduction,
+            self.profile_image,
+            self.created_at,
+            self.updated_at,
+        )
 
 
 class OrgArtist(Base):
@@ -24,6 +34,11 @@ class OrgArtist(Base):
         "Artist", back_populates="OrgArtist"  # Artist-OrgArtist One-to-One relationship
     )
 
+    def __repr__(self) -> str:
+        return "<{}(id='{}', artist_id='{}')>".format(
+            self.__name__, self.id, self.artist_id
+        )
+
 
 class UserArtist(Base):
     user_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"))
@@ -31,6 +46,11 @@ class UserArtist(Base):
     user = relationship(
         "User", back_populates="UserArtist"  # Artist-UserArtist One-to-One relationship
     )
+
+    def __repr__(self) -> str:
+        return "<{}(id='{}', user_id='{}')>".format(
+            self.__name__, self.id, self.user_id
+        )
 
 
 class ArtistFollow(Base):
@@ -46,3 +66,8 @@ class ArtistFollow(Base):
         "User",
         backref=backref("ArtistFollow"),  # User-ArtistFollow One-to-Many relationship
     )
+
+    def __repr__(self) -> str:
+        return "<{}(id='{}', artist_id='{}', user_id='{}', created_at='{}')>".format(
+            self.__name__, self.id, self.artist_id, self.user_id, self.created_at
+        )

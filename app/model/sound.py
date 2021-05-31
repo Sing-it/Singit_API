@@ -13,3 +13,8 @@ class UserSound(Base):
     user = relationship(
         "User", backref=backref("UserSound")
     )  # User-UserSound One-to-Many relationship
+
+    def __repr__(self) -> str:
+        return "<{}(id='{}', user_id='{}', lyric='{}', song_melody='{}', sound='{}')>".format(
+            self.__name__, self.id, self.user_id, self.lyric[:50], self.song_melody, self.sound
+        )

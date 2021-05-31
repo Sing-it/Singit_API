@@ -23,6 +23,19 @@ class Song(Base):
         "RemakeUserSong", uselist=False, back_populates="Song"
     )
 
+    def __repr__(self) -> str:
+        return "<{}(id='{}', title='{}', description='{}', play='{}', file_link='{}', profile_image='{}', created_at='{}', updated_at='{}' )>".format(
+            self.__name__,
+            self.id,
+            self.title,
+            self.description,
+            self.play,
+            self.file_link,
+            self.profile_image,
+            self.created_at,
+            self.updated_at,
+        )
+
 
 class OrgSong(Base):
     song_id = Column(Integer, ForeignKey("Song.id", ondelete="CASCADE"), nullable=False)
@@ -40,6 +53,11 @@ class OrgSong(Base):
     artist = relationship(
         "Artist", backref=backref("OrgSong")  # Artist-OrgSong One-to-Many relationship
     )
+
+    def __repr__(self) -> str:
+        return "<{}(id='{}', song_id='{}', artist_id='{}', lyric='{}')>".format(
+            self.__name__, self.id, self.song_id, self.artist_id, self.lyric[:50]
+        )
 
 
 class RemakeArtistSong(Base):
@@ -64,6 +82,11 @@ class RemakeArtistSong(Base):
         back_populates="RemakeArtistSong",  # Song-RemakeArtistSong One-to-One relationship
     )
 
+    def __repr__(self) -> str:
+        return "<{}(id='{}', artist_id='{}', org_song_id='{}', song_id='{}', )>".format(
+            self.__name__, self.id, self.artist_id, self.org_song_id, self.song_id
+        )
+
 
 class RemakeUserSong(Base):
     user_id = Column(Integer, ForeignKey("User.id", ondelete="SET NULL"))
@@ -87,6 +110,11 @@ class RemakeUserSong(Base):
         back_populates="RemakeUserSong",  # Song-RemakeUserSong One-to-One relationship
     )
 
+    def __repr__(self) -> str:
+        return "<{}(id='{}', user_id='{}', org_song_id='{}', song_id='{}', )>".format(
+            self.__name__, self.id, self.user_id, self.org_song_id, self.song_id
+        )
+
 
 class SongLike(Base):
     song_id = Column(Integer, ForeignKey("Song.id", ondelete="CASCADE"))
@@ -99,3 +127,8 @@ class SongLike(Base):
     user = relationship(
         "User", backref=backref("SongLike")
     )  # User-SongLike One-to-Many relationship
+
+    def __repr__(self) -> str:
+        return "<{}(id='{}', song_id='{}', user_id='{}', created_at='{}')>".format(
+            self.__name__, self.id, self.user_id, self.created_at
+        )
