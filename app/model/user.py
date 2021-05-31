@@ -17,3 +17,6 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     user_artist = relationship("UserArtist", uselist=False, back_populates="User")
+    artist_follow = relationship(
+        "ArtistFollow"
+    )  # User-ArtistFollow One-to-Many relationship
