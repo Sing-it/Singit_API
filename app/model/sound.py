@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship, backref
 
-from .base import Base
+from .base_class import Base
 
 
 class UserSound(Base):
