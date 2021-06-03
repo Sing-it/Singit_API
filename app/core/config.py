@@ -22,9 +22,14 @@ class Settings(BaseSettings):
         os.getenv("LOCAL_DB_PASSWORD") if MODE else os.getenv("RDS_DB_PASSWORD")
     )
     DB_NAME: str = os.getenv("LOCAL_DB_NAME") if MODE else os.getenv("RDS_DB_NAME")
+    DB_PORT: str = os.getenv("LOCAL_DB_PORT") if MODE else os.getenv("RDS_DB_PORT")
 
-    SQLALCHEMY_DATABASE_URI: str = "mysql://{}:{}@{}/{}?charset=utf8".format(
-        DB_USER, DB_PASSWORD, DB_HOST, DB_NAME
+    SQLALCHEMY_DATABASE_URI: str = "mysql+mysqlconnector://{}:{}@{}:{}/{}?charset=utf8".format(
+        DB_USER,
+        DB_PASSWORD,
+        DB_HOST,
+        DB_PORT,
+        DB_NAME,
     )
 
 
