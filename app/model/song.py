@@ -2,12 +2,15 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Text, DateTime
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql import func
 
-from .base_class import Base
+from app.model.base_class import Base
+from app.model.user import User
+from app.model.artist import Artist
 
 DEFAULT_SONG_PROFILE_IMAGE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_rB4T2_cyi76yYVELAVqs-pPu3nalV_ZpQA&usqp=CAU"
 
 
 class Song(Base):
+    id = Column(Integer, autoincrement=True, primary_key=True)
     title = Column(String(100), nullable=False)
     description = Column(String(500), nullable=True)
     play = Column(Integer, default=0)
@@ -38,9 +41,10 @@ class Song(Base):
 
 
 class OrgSong(Base):
-    song_id = Column(Integer, ForeignKey("Song.id", ondelete="CASCADE"), nullable=False)
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    song_id = Column(Integer, ForeignKey(Song.id, ondelete="CASCADE"), nullable=False)
     artist_id = Column(
-        Integer, ForeignKey("Artist.id", ondelete="CASCADE"), nullable=False
+        Integer, ForeignKey(Artist.id, ondelete="CASCADE"), nullable=False
     )
     lyric = Column(Text, nullable=True)
 
@@ -51,7 +55,8 @@ class OrgSong(Base):
         ),  # OrgSong-Song One-to-One relationship
     )
     artist = relationship(
-        "Artist", backref=backref("OrgSong")  # Artist-OrgSong One-to-Many relationship
+        "Artist",
+        backref=backref("OrgSong_set"),  # Artist-OrgSong One-to-Many relationship
     )
 
     def __repr__(self) -> str:
@@ -61,9 +66,10 @@ class OrgSong(Base):
 
 
 class RemakeArtistSong(Base):
-    artist_id = Column(Integer, ForeignKey("Artist.id", ondelete="SET NULL"))
-    org_song_id = Column(Integer, ForeignKey("OrgSong.id", ondelete="SET NULL"))
-    song_id = Column(Integer, ForeignKey("Song.id", ondelete="CASCADE"), nullable=False)
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    artist_id = Column(Integer, ForeignKey(Artist.id, ondelete="SET NULL"))
+    org_song_id = Column(Integer, ForeignKey(OrgSong.id, ondelete="SET NULL"))
+    song_id = Column(Integer, ForeignKey(Song.id, ondelete="CASCADE"), nullable=False)
 
     org_song = relationship(
         "OrgSong",
@@ -89,9 +95,10 @@ class RemakeArtistSong(Base):
 
 
 class RemakeUserSong(Base):
-    user_id = Column(Integer, ForeignKey("User.id", ondelete="SET NULL"))
-    org_song_id = Column(Integer, ForeignKey("OrgSong.id", ondelete="SET NULL"))
-    song_id = Column(Integer, ForeignKey("Song.id", ondelete="CASCADE"), nullable=False)
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    user_id = Column(Integer, ForeignKey(User.id, ondelete="SET NULL"))
+    org_song_id = Column(Integer, ForeignKey(OrgSong.id, ondelete="SET NULL"))
+    song_id = Column(Integer, ForeignKey(Song.id, ondelete="CASCADE"), nullable=False)
 
     org_song = relationship(
         "OrgSong",
@@ -117,8 +124,9 @@ class RemakeUserSong(Base):
 
 
 class SongLike(Base):
-    song_id = Column(Integer, ForeignKey("Song.id", ondelete="CASCADE"))
-    user_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"))
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    song_id = Column(Integer, ForeignKey(Song.id, ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     song = relationship(

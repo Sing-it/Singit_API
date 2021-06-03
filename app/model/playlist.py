@@ -1,13 +1,16 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy.sql import func
 
-from .base_class import Base
+from app.model.base_class import Base
+from app.model.song import Song
+from app.model.user import User
 
 
 class PlayList(Base):
+    id = Column(Integer, autoincrement=True, primary_key=True)
     title = Column(String(100), nullable=False)
-    user_id = Column(Integer, ForeignKey("User.id", ondelete="SET NULL"))
+    user_id = Column(Integer, ForeignKey(User.id, ondelete="SET NULL"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
@@ -27,8 +30,9 @@ class PlayList(Base):
 
 
 class PlayListSong(Base):
-    playlist_id = Column(Integer, ForeignKey("PlayList.id", ondelete="CASCADE"))
-    song_id = Column(Integer, ForeignKey("Song.id", ondelete="CASCADE"))
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    playlist_id = Column(Integer, ForeignKey(PlayList.id, ondelete="CASCADE"))
+    song_id = Column(Integer, ForeignKey(Song.id, ondelete="CASCADE"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     playlist = relationship(
@@ -45,8 +49,9 @@ class PlayListSong(Base):
 
 
 class PlayListLike(Base):
-    playlist_id = Column(Integer, ForeignKey("PlayList.id", ondelete="CASCADE"))
-    user_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"))
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    playlist_id = Column(Integer, ForeignKey(PlayList.id, ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     playlist = relationship(

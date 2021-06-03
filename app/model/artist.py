@@ -1,12 +1,16 @@
 from sqlalchemy import Column, String, Integer, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql import func
-from .base_class import Base
+
+from app.model.base_class import Base
+from app.model.user import User
 
 DEFAULT_ARTIST_IMAGE = "https://image.shutterstock.com/image-vector/user-icon-trendy-flat-style-260nw-418179865.jpg"  # 추후 AWS S3 url로 수정, schema 파일로 이동
 
 
 class Artist(Base):
+
+    id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50), nullable=False)
     introduction = Column(String(500), nullable=True)
     profile_image = Column(Text, default=DEFAULT_ARTIST_IMAGE)
@@ -28,7 +32,8 @@ class Artist(Base):
 
 
 class OrgArtist(Base):
-    artist_id = Column(Integer, ForeignKey("Artist.id", ondelete="CASCADE"))
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    artist_id = Column(Integer, ForeignKey(Artist.id, ondelete="CASCADE"))
 
     artist = relationship(
         "Artist", back_populates="OrgArtist"  # Artist-OrgArtist One-to-One relationship
@@ -41,7 +46,8 @@ class OrgArtist(Base):
 
 
 class UserArtist(Base):
-    user_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"))
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
 
     user = relationship(
         "User", back_populates="UserArtist"  # Artist-UserArtist One-to-One relationship
@@ -54,8 +60,9 @@ class UserArtist(Base):
 
 
 class ArtistFollow(Base):
-    artist_id = Column(Integer, ForeignKey("Artist.id", ondelete="CASCADE"))
-    user_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"))
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    artist_id = Column(Integer, ForeignKey(Artist.id, ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     artist = relationship(
