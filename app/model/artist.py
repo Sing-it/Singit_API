@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Text, DateTime, ForeignKey
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql import func
 
@@ -13,7 +13,7 @@ class Artist(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50), nullable=False)
     introduction = Column(String(500), nullable=True)
-    profile_image = Column(Text, default=DEFAULT_ARTIST_IMAGE)
+    profile_image = Column(String(100), default=DEFAULT_ARTIST_IMAGE)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

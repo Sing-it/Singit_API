@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Text
+from sqlalchemy import Column, Integer, ForeignKey, Text, String
 from sqlalchemy.orm import relationship, backref
 
 from app.model.base_class import Base
@@ -9,8 +9,8 @@ class UserSound(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
     lyric = Column(Text, nullable=False)
-    song_melody = Column(Text, nullable=False)  # song melody sound file url
-    sound = Column(Text, nullable=False)  # user's sound file url
+    song_melody = Column(String(100), nullable=False)  # song melody sound file url
+    sound = Column(String(100), nullable=False)  # user's sound file url
 
     user = relationship(
         "User", backref=backref("UserSound")

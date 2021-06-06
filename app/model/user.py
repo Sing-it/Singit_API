@@ -12,7 +12,7 @@ class User(Base):
     email = Column(String(100), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
     nickname = Column(String(100), nullable=False)
-    profile_image = Column(Text, default=DEFAULT_PROFILE_IMAGE)
+    profile_image = Column(String(100), default=DEFAULT_PROFILE_IMAGE)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

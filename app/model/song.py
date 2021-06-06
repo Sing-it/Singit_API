@@ -14,8 +14,8 @@ class Song(Base):
     title = Column(String(100), nullable=False)
     description = Column(String(500), nullable=True)
     play = Column(Integer, default=0)
-    file_link = Column(Text, nullable=False)
-    profile_image = Column(Text, default=DEFAULT_SONG_PROFILE_IMAGE)
+    file_link = Column(String(100), nullable=False)
+    profile_image = Column(String(100), default=DEFAULT_SONG_PROFILE_IMAGE)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
