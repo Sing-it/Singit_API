@@ -5,16 +5,39 @@ from app.model.base_class import Base
 from app.model.user import User
 
 
+class RemakeMaterial(Base):
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    title = Column(String(100), nullable=False)
+    artist = Column(String(50), nullable=False)  # artist name
+    song = Column(String(100), nullable=False)  # Song File URL
+    accompaniment = Column(String(100), nullable=False)  # Accompaniment File URL
+    lyric = Column(String(200), nullable=True)
+
+    def __repr__(self) -> str:
+        return "<{}(id='{}', title='{}', artist='{}', song='{}', accompaniment='{}', lyric='{}')>".format(
+            self.__name__,
+            self.id,
+            self.title,
+            self.artist,
+            self.song,
+            self.accompaniment,
+            self.lyric[:50],
+        )
+
+
 class UserSound(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
-    lyric = Column(Text, nullable=False)
-    song_melody = Column(String(100), nullable=False)  # song melody sound file url
     sound = Column(String(100), nullable=False)  # user's sound file url
+    material_id = Column(Integer, ForeignKey(RemakeMaterial.id, ondelete="CASCADE"))
 
     user = relationship(
         "User", backref=backref("UserSound")
     )  # User-UserSound One-to-Many relationship
+
+    material = relationship(
+        "RemakeMaterial", backref=backref("UserSound")
+    )  # RemakeMaterial-User One-to-Many relationship
 
     def __repr__(self) -> str:
         return "<{}(id='{}', user_id='{}', lyric='{}', song_melody='{}', sound='{}')>".format(
