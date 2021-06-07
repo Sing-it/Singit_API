@@ -60,9 +60,10 @@ class UserArtist(Base):
 
 
 class ArtistFollow(Base):
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    artist_id = Column(Integer, ForeignKey(Artist.id, ondelete="CASCADE"))
-    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
+    artist_id = Column(
+        Integer, ForeignKey(Artist.id, ondelete="CASCADE"), primary_key=True
+    )
+    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"), primary_key=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     artist = relationship(
@@ -75,6 +76,6 @@ class ArtistFollow(Base):
     )
 
     def __repr__(self) -> str:
-        return "<{}(id='{}', artist_id='{}', user_id='{}', created_at='{}')>".format(
-            self.__name__, self.id, self.artist_id, self.user_id, self.created_at
+        return "<{}( artist_id='{}', user_id='{}', created_at='{}')>".format(
+            self.__name__, self.artist_id, self.user_id, self.created_at
         )
