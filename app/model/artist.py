@@ -17,8 +17,6 @@ class Artist(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
-    org_artist = relationship("OrgArtist", uselist=False, back_populates="Artist")
-
     def __repr__(self) -> str:
         return "<{}(id='{}', name='{}', introduction='{}', profile_image='{}', created_at='{}', updated_at='{}')>".format(
             self.__name__,
@@ -32,16 +30,16 @@ class Artist(Base):
 
 
 class OrgArtist(Base):
+
     id = Column(Integer, autoincrement=True, primary_key=True)
     artist_id = Column(Integer, ForeignKey(Artist.id, ondelete="CASCADE"))
 
     artist = relationship(
-        "Artist", back_populates="OrgArtist"  # Artist-OrgArtist One-to-One relationship
+        "Artist",
+        backref=backref(
+            "OrgArtist", uselist=False
+        ),  # Artist-OrgArtist One-to-One relationship
     )
-
-    artist_sound = relationship(
-        "ArtistSound", uselist=False, back_populates="OrgArist"
-    )  # ArtistSound-OrgArtist One-to-One relationship
 
     def __repr__(self) -> str:
         return "<{}(id='{}', artist_id='{}')>".format(
@@ -50,11 +48,15 @@ class OrgArtist(Base):
 
 
 class UserArtist(Base):
+
     id = Column(Integer, autoincrement=True, primary_key=True)
     user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
 
     user = relationship(
-        "User", back_populates="UserArtist"  # Artist-UserArtist One-to-One relationship
+        "User",
+        backref=backref(
+            "UserArtist", uselist=False
+        ),  # User-UserArtist One-to-One relationship
     )
 
     def __repr__(self) -> str:
@@ -64,6 +66,7 @@ class UserArtist(Base):
 
 
 class ArtistFollow(Base):
+
     artist_id = Column(
         Integer, ForeignKey(Artist.id, ondelete="CASCADE"), primary_key=True
     )

@@ -10,6 +10,7 @@ DEFAULT_SONG_PROFILE_IMAGE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:AN
 
 
 class Song(Base):
+
     id = Column(Integer, autoincrement=True, primary_key=True)
     title = Column(String(100), nullable=False)
     description = Column(String(500), nullable=True)
@@ -20,10 +21,10 @@ class Song(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     remake_artist_song = relationship(
-        "RemakeArtistSong", uselist=False, back_populates="Song"
+        "RemakeArtistSong", backref=backref("Song", uselist=False)
     )
     remake_user_song = relationship(
-        "RemakeUserSong", uselist=False, back_populates="Song"
+        "RemakeUserSong", backref=backref("Song", uselist=False)
     )
 
     def __repr__(self) -> str:
@@ -41,6 +42,7 @@ class Song(Base):
 
 
 class OrgSong(Base):
+
     id = Column(Integer, autoincrement=True, primary_key=True)
     song_id = Column(Integer, ForeignKey(Song.id, ondelete="CASCADE"), nullable=False)
     artist_id = Column(
@@ -56,7 +58,7 @@ class OrgSong(Base):
     )
     artist = relationship(
         "Artist",
-        backref=backref("OrgSong_set"),  # Artist-OrgSong One-to-Many relationship
+        backref=backref("OrgSong"),  # Artist-OrgSong One-to-Many relationship
     )
 
     def __repr__(self) -> str:
@@ -66,6 +68,7 @@ class OrgSong(Base):
 
 
 class RemakeArtistSong(Base):
+
     id = Column(Integer, autoincrement=True, primary_key=True)
     artist_id = Column(Integer, ForeignKey(Artist.id, ondelete="SET NULL"))
     org_song_id = Column(Integer, ForeignKey(OrgSong.id, ondelete="SET NULL"))
@@ -85,7 +88,9 @@ class RemakeArtistSong(Base):
     )
     song = relationship(
         "Song",
-        back_populates="RemakeArtistSong",  # Song-RemakeArtistSong One-to-One relationship
+        backref=backref(
+            "RemakeArtistSong", uselist=False
+        ),  # Song-RemakeArtistSong One-to-One relationship
     )
 
     def __repr__(self) -> str:
@@ -95,6 +100,7 @@ class RemakeArtistSong(Base):
 
 
 class RemakeUserSong(Base):
+
     id = Column(Integer, autoincrement=True, primary_key=True)
     user_id = Column(Integer, ForeignKey(User.id, ondelete="SET NULL"))
     org_song_id = Column(Integer, ForeignKey(OrgSong.id, ondelete="SET NULL"))
@@ -124,6 +130,7 @@ class RemakeUserSong(Base):
 
 
 class SongLike(Base):
+
     id = Column(Integer, autoincrement=True, primary_key=True)
     song_id = Column(Integer, ForeignKey(Song.id, ondelete="CASCADE"))
     user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))

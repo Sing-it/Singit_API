@@ -58,6 +58,7 @@ class ArtistSound(Base):
     sound = Column(String(100), nullable=False)  # artist's file url
     lyric = Column(String(200), nullable=True)
 
+
     def __repr__(self) -> str:
         return "<{}(id='{}', user_id='{}', lyric='{}', song_melody='{}', sound='{}')>".format(
             self.__name__,

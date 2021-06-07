@@ -8,6 +8,7 @@ from app.model.user import User
 
 
 class PlayList(Base):
+
     id = Column(Integer, autoincrement=True, primary_key=True)
     title = Column(String(100), nullable=False)
     owner_id = Column(Integer, ForeignKey(User.id, ondelete="SET NULL"))
@@ -30,6 +31,7 @@ class PlayList(Base):
 
 
 class PlayListSong(Base):
+
     playlist_id = Column(
         Integer, ForeignKey(PlayList.id, ondelete="CASCADE"), primary_key=True
     )
@@ -50,6 +52,7 @@ class PlayListSong(Base):
 
 
 class PlayListLike(Base):
+
     playlist_id = Column(
         Integer, ForeignKey(PlayList.id, ondelete="CASCADE"), primary_key=True
     )
