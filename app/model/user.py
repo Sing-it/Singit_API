@@ -16,7 +16,10 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     is_active = Column(Boolean, default=False)
-    user_artist = relationship("UserArtist", uselist=False, back_populates="User")
+
+    user_artist = relationship(
+        "UserArtist", uselist=False, back_populates="User"
+    )  # UserArtist-User One-to-One relationship
 
     def __repr__(self) -> str:
         return "<{}(id='{}', email='{}', password='{}', nickname='{}', profile_image='{}', is_active='{}'created_at='{}', updated_at='{}')>".format(
