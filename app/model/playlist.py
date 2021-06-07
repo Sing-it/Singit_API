@@ -10,7 +10,7 @@ from app.model.user import User
 class PlayList(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     title = Column(String(100), nullable=False)
-    user_id = Column(Integer, ForeignKey(User.id, ondelete="SET NULL"))
+    owner_id = Column(Integer, ForeignKey(User.id, ondelete="SET NULL"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
@@ -19,20 +19,21 @@ class PlayList(Base):
     )  # User-PlayList One-to-Many relationship
 
     def __repr__(self) -> str:
-        return "<{}(id='{}', title='{}', user_id='{}', created_at='{}', updated_at='{}')>".format(
+        return "<{}(id='{}', title='{}', owner_id='{}', created_at='{}', updated_at='{}')>".format(
             self.__name__,
             self.id,
             self.title,
-            self.user_id,
+            self.owner_id,
             self.created_at,
             self.updated_at,
         )
 
 
 class PlayListSong(Base):
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    playlist_id = Column(Integer, ForeignKey(PlayList.id, ondelete="CASCADE"))
-    song_id = Column(Integer, ForeignKey(Song.id, ondelete="CASCADE"))
+    playlist_id = Column(
+        Integer, ForeignKey(PlayList.id, ondelete="CASCADE"), primary_key=True
+    )
+    song_id = Column(Integer, ForeignKey(Song.id, ondelete="CASCADE"), primary_key=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     playlist = relationship(
@@ -49,9 +50,10 @@ class PlayListSong(Base):
 
 
 class PlayListLike(Base):
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    playlist_id = Column(Integer, ForeignKey(PlayList.id, ondelete="CASCADE"))
-    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
+    playlist_id = Column(
+        Integer, ForeignKey(PlayList.id, ondelete="CASCADE"), primary_key=True
+    )
+    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"), primary_key=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     playlist = relationship(
