@@ -13,9 +13,11 @@ class Artist(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50), nullable=False)
     introduction = Column(String(500), nullable=True)
-    profile_image = Column(String(100), default=DEFAULT_ARTIST_IMAGE)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    profile_image = Column(String(100), default=DEFAULT_ARTIST_IMAGE, nullable=False)
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=False)
 
     def __repr__(self) -> str:
         return "<{}(id='{}', name='{}', introduction='{}', profile_image='{}', created_at='{}', updated_at='{}')>".format(
@@ -32,7 +34,9 @@ class Artist(Base):
 class OrgArtist(Base):
 
     id = Column(Integer, autoincrement=True, primary_key=True)
-    artist_id = Column(Integer, ForeignKey(Artist.id, ondelete="CASCADE"))
+    artist_id = Column(
+        Integer, ForeignKey(Artist.id, ondelete="CASCADE"), nullable=False
+    )
 
     artist = relationship(
         "Artist",
@@ -50,7 +54,7 @@ class OrgArtist(Base):
 class UserArtist(Base):
 
     id = Column(Integer, autoincrement=True, primary_key=True)
-    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"), nullable=False)
 
     user = relationship(
         "User",
@@ -71,7 +75,9 @@ class ArtistFollow(Base):
         Integer, ForeignKey(Artist.id, ondelete="CASCADE"), primary_key=True
     )
     user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"), primary_key=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
 
     artist = relationship(
         "Artist",

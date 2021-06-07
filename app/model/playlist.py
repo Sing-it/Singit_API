@@ -12,8 +12,10 @@ class PlayList(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     title = Column(String(100), nullable=False)
     owner_id = Column(Integer, ForeignKey(User.id, ondelete="SET NULL"))
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=False)
 
     user = relationship(
         "User", backref=backref("PlayList")
@@ -36,7 +38,9 @@ class PlayListSong(Base):
         Integer, ForeignKey(PlayList.id, ondelete="CASCADE"), primary_key=True
     )
     song_id = Column(Integer, ForeignKey(Song.id, ondelete="CASCADE"), primary_key=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
 
     playlist = relationship(
         "PlayList", backref=backref("PlayListSong")
@@ -57,7 +61,9 @@ class PlayListLike(Base):
         Integer, ForeignKey(PlayList.id, ondelete="CASCADE"), primary_key=True
     )
     user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"), primary_key=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
 
     playlist = relationship(
         "PlayList", backref=backref("PlayListLike")

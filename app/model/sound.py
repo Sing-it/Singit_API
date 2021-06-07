@@ -28,9 +28,11 @@ class RemakeMaterial(Base):
 
 class UserSound(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
-    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"), nullable=False)
     sound = Column(String(100), nullable=False)  # user's file url
-    material_id = Column(Integer, ForeignKey(RemakeMaterial.id, ondelete="CASCADE"))
+    material_id = Column(
+        Integer, ForeignKey(RemakeMaterial.id, ondelete="CASCADE"), nullable=False
+    )
 
     user = relationship(
         "User", backref=backref("UserSound")
@@ -53,11 +55,10 @@ class UserSound(Base):
 
 class ArtistSound(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
-    artist_id = Column(Integer, ForeignKey(OrgArtist.id, ondelete="SET_NULL"))
+    artist_id = Column(Integer, ForeignKey(OrgArtist.id, ondelete="SET NULL"))
     song = Column(String(100), nullable=False)  # song File URL
     sound = Column(String(100), nullable=False)  # artist's file url
     lyric = Column(String(200), nullable=True)
-
 
     def __repr__(self) -> str:
         return "<{}(id='{}', user_id='{}', lyric='{}', song_melody='{}', sound='{}')>".format(

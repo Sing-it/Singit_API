@@ -14,11 +14,15 @@ class Song(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     title = Column(String(100), nullable=False)
     description = Column(String(500), nullable=True)
-    play = Column(Integer, default=0)
+    play = Column(Integer, default=0, nullable=False)
     file_link = Column(String(100), nullable=False)
-    profile_image = Column(String(100), default=DEFAULT_SONG_PROFILE_IMAGE)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    profile_image = Column(
+        String(100), default=DEFAULT_SONG_PROFILE_IMAGE, nullable=False
+    )
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=False)
 
     remake_artist_song = relationship(
         "RemakeArtistSong", backref=backref("Song", uselist=False)
@@ -70,7 +74,10 @@ class OrgSong(Base):
 class RemakeArtistSong(Base):
 
     id = Column(Integer, autoincrement=True, primary_key=True)
-    artist_id = Column(Integer, ForeignKey(Artist.id, ondelete="SET NULL"))
+    artist_id = Column(
+        Integer,
+        ForeignKey(Artist.id, ondelete="SET NULL"),
+    )
     org_song_id = Column(Integer, ForeignKey(OrgSong.id, ondelete="SET NULL"))
     song_id = Column(Integer, ForeignKey(Song.id, ondelete="CASCADE"), nullable=False)
 
