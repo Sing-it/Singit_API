@@ -39,6 +39,10 @@ class OrgArtist(Base):
         "Artist", back_populates="OrgArtist"  # Artist-OrgArtist One-to-One relationship
     )
 
+    artist_sound = relationship(
+        "ArtistSound", uselist=False, back_populates="OrgArist"
+    )  # ArtistSound-OrgArtist One-to-One relationship
+
     def __repr__(self) -> str:
         return "<{}(id='{}', artist_id='{}')>".format(
             self.__name__, self.id, self.artist_id
