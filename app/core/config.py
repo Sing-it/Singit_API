@@ -24,13 +24,18 @@ class Settings(BaseSettings):
     DB_NAME: str = os.getenv("LOCAL_DB_NAME") if MODE else os.getenv("RDS_DB_NAME")
     DB_PORT: str = os.getenv("LOCAL_DB_PORT") if MODE else os.getenv("RDS_DB_PORT")
 
-    SQLALCHEMY_DATABASE_URI: str = "mysql+mysqlconnector://{}:{}@{}:{}/{}?charset=utf8".format(
-        DB_USER,
-        DB_PASSWORD,
-        DB_HOST,
-        DB_PORT,
-        DB_NAME,
+    SQLALCHEMY_DATABASE_URI: str = (
+        "mysql+mysqlconnector://{}:{}@{}:{}/{}?charset=utf8".format(
+            DB_USER,
+            DB_PASSWORD,
+            DB_HOST,
+            DB_PORT,
+            DB_NAME,
+        )
     )
+    DEFAULT_SONG_PROFILE_IMAGE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_rB4T2_cyi76yYVELAVqs-pPu3nalV_ZpQA&usqp=CAU"  # 추후 AWS S3 url로 수정, schema 파일로 이동
+    DEFAULT_ARTIST_IMAGE = "https://image.shutterstock.com/image-vector/user-icon-trendy-flat-style-260nw-418179865.jpg"  # 추후 AWS S3 url로 수정, schema 파일로 이동
+    DEFAULT_PROFILE_IMAGE = "https://image.shutterstock.com/image-vector/user-icon-trendy-flat-style-260nw-418179865.jpg"  # 추후 AWS S3 url로 수정, schema 파일로 이동
 
 
 settings = Settings()

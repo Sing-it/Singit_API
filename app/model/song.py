@@ -5,8 +5,7 @@ from sqlalchemy.sql import func
 from app.model.base_class import Base
 from app.model.user import User
 from app.model.artist import Artist
-
-DEFAULT_SONG_PROFILE_IMAGE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_rB4T2_cyi76yYVELAVqs-pPu3nalV_ZpQA&usqp=CAU"
+from app.core.config import settings
 
 
 class Song(Base):
@@ -17,7 +16,7 @@ class Song(Base):
     play = Column(Integer, default=0, nullable=False)
     file_link = Column(String(100), nullable=False)
     profile_image = Column(
-        String(100), default=DEFAULT_SONG_PROFILE_IMAGE, nullable=False
+        String(100), default=settings.DEFAULT_SONG_PROFILE_IMAGE, nullable=False
     )
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
