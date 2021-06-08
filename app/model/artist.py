@@ -4,8 +4,7 @@ from sqlalchemy.sql import func
 
 from app.model.base_class import Base
 from app.model.user import User
-
-DEFAULT_ARTIST_IMAGE = "https://image.shutterstock.com/image-vector/user-icon-trendy-flat-style-260nw-418179865.jpg"  # 추후 AWS S3 url로 수정, schema 파일로 이동
+from app.core.config import settings
 
 
 class Artist(Base):
@@ -13,7 +12,9 @@ class Artist(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50), nullable=False)
     introduction = Column(String(500), nullable=True)
-    profile_image = Column(String(100), default=DEFAULT_ARTIST_IMAGE, nullable=False)
+    profile_image = Column(
+        String(100), default=settings.DEFAULT_ARTIST_IMAGE, nullable=False
+    )
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

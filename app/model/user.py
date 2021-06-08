@@ -1,10 +1,8 @@
 from sqlalchemy import Column, String, DateTime, Integer, Boolean
-from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from app.model.base_class import Base
-
-DEFAULT_PROFILE_IMAGE = "https://image.shutterstock.com/image-vector/user-icon-trendy-flat-style-260nw-418179865.jpg"  # 추후 AWS S3 url로 수정, schema 파일로 이동
+from app.core.config import settings
 
 
 class User(Base):
@@ -12,7 +10,7 @@ class User(Base):
     email = Column(String(100), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
     nickname = Column(String(100), nullable=False)
-    profile_image = Column(String(100), default=DEFAULT_PROFILE_IMAGE)
+    profile_image = Column(String(100), default=settings.DEFAULT_PROFILE_IMAGE)
     is_active = Column(Boolean, default=False, nullable=False)
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
