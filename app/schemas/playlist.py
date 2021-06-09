@@ -1,7 +1,7 @@
 from typing import Optional, List
 from pydantic import BaseModel, HttpUrl
 
-from app.schemas.song import SongBase
+from app.schemas.song import SongOutput
 
 
 class PlaylistBase(BaseModel):
@@ -23,7 +23,7 @@ class PlaylistDetail(PlaylistBase):
     owner_id: int
     profile_image: HttpUrl
     like: int
-    songs: Optional[List[SongBase]] = None
+    songs: Optional[List[SongOutput]] = None
 
 
 class PlaylistList(PlaylistBase):
