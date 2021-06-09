@@ -13,8 +13,6 @@ class UserBase(BaseModel):
     nickname: Optional[str] = None
     profile_image: Optional[HttpUrl] = None
     is_active: Optional[bool] = False
-    created_at: Optional[datetime]
-    updated_at: Optional[datetime]
 
 
 class UserCreate(UserBase):
