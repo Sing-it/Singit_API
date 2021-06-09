@@ -8,6 +8,7 @@ class SongBase(BaseModel):
     artist_id: Optional[int] = None
     description: Optional[str] = None
     play: Optional[int] = None
+    like: Optional[int] = None
     link: Optional[HttpUrl] = None
     profile_image: Optional[HttpUrl] = None
 
@@ -16,7 +17,8 @@ class SongBaseResult(SongBase):
     id: int
     title: str
     artist_id: int
-    play: int
+    play: int = 0
+    like: int = 0
     profile_image: HttpUrl
 
 

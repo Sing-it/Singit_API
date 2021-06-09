@@ -7,11 +7,11 @@ class ArtistBase(BaseModel):
     name: Optional[str] = None
     introduction: Optional[str] = None
     profile_image: Optional[HttpUrl] = None
-    follow: Optional[int] = None
+    follow: Optional[int] = 0
 
 
 class ArtistResultBase(ArtistBase):
     id: str
     name: str
     profile_image: HttpUrl
-    follow: int
+    follow: int = 0
