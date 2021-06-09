@@ -10,7 +10,7 @@ class ArtistBase(BaseModel):
     follow: Optional[int] = None
 
 
-class ArtistOutput(ArtistBase):
+class ArtistResultBase(ArtistBase):
     id: str
     name: str
     profile_image: HttpUrl

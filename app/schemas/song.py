@@ -12,7 +12,7 @@ class SongBase(BaseModel):
     profile_image: Optional[HttpUrl] = None
 
 
-class SongOutput(SongBase):
+class SongBaseResult(SongBase):
     id: int
     title: str
     artist_id: int
@@ -21,4 +21,4 @@ class SongOutput(SongBase):
 
 
 class SongList(SongBase):
-    results: Optional[List[SongOutput]] = None
+    results: Optional[List[SongBaseResult]] = None
