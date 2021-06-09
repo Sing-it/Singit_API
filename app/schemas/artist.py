@@ -8,8 +8,6 @@ class ArtistBase(BaseModel):
     name: Optional[str] = None
     introduction: Optional[str] = None
     profile_image: Optional[HttpUrl] = None
-    created_at = Optional[datetime]
-    updated_at = Optional[datetime]
 
 
 class ArtistOutput(ArtistBase):
