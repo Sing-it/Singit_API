@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, HttpUrl
 from pydantic.networks import EmailStr
-from datetime import datetime
+
 
 from app.core.config import settings
 
