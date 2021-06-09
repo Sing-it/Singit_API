@@ -11,7 +11,15 @@ class ArtistBase(BaseModel):
 
 
 class ArtistResultBase(ArtistBase):
-    id: str
+    id: int
     name: str
     profile_image: HttpUrl
+    follow: int = 0
+
+
+class ArtistResultDetail(ArtistBase):
+    id: int
+    name: str
+    profile_image: HttpUrl
+    introduction: Optional[str]
     follow: int = 0
