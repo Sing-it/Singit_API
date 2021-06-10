@@ -37,5 +37,13 @@ class Settings(BaseSettings):
     DEFAULT_ARTIST_IMAGE = "https://image.shutterstock.com/image-vector/user-icon-trendy-flat-style-260nw-418179865.jpg"  # 추후 AWS S3 url로 수정, schema 파일로 이동
     DEFAULT_PROFILE_IMAGE = "https://image.shutterstock.com/image-vector/user-icon-trendy-flat-style-260nw-418179865.jpg"  # 추후 AWS S3 url로 수정, schema 파일로 이동
 
+    AWS_CONFIG = {
+        "REGION": os.getenv("REGION"),
+        "ACCESS_KEY_ID": os.getenv("ACCESS_KEY_ID"),
+        "SECRET_KEY": os.getenv("SECRET_KEY"),
+        "BUCKET_NAME": os.getenv("BUCKET_NAME"),
+        "SONG_BUCKET_NAME": os.getenv("SONG_BUCKET_NAME"),
+    }
+
 
 settings = Settings()
