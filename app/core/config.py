@@ -42,6 +42,7 @@ class Settings(BaseSettings):
         "ACCESS_KEY_ID": os.getenv("ACCESS_KEY_ID"),
         "SECRET_KEY": os.getenv("SECRET_KEY"),
         "BUCKET_NAME": os.getenv("BUCKET_NAME"),
+        "SONG_BUCKET_NAME": os.getenv("SONG_BUCKET_NAME"),
     }
 
 
