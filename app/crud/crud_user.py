@@ -1,11 +1,13 @@
-from typing import Any, Dict, Optional, Union
+from typing import Optional
 
 from sqlalchemy.orm import Session
-
+from datetime import datetime
+from calendar import timegm
 from app.core.security import get_password_hash, verify_password
 from app.crud.base import CRUDBase
 from app.model.user import User
 from app.schemas.user import UserCreate, UserPasswordUpdate
+from app.util import Util
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
@@ -14,18 +16,21 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
         return db.query(User).filter(User.email == email).first()
 
     def create(self, db: Session, *, obj_in: UserCreate) -> User:
+        filename = obj_in.email + "_" + str(timegm(datetime.utcnow().utctimetuple()))
+        obj_img_url = Util.s3upload(
+            file=obj_in.profile_image, path="/image/user/", filename=filename
+        )
         db_obj = User(
             email=obj_in.email,
             password=obj_in.password,
             nickname=obj_in.nickname,
-            profile_image=obj_in,
+            profile_image=obj_img_url,
             is_active=False,
         )
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
         return db_obj
-        # login 시 사용
 
     def authenticate(self, db: Session, *, email: str, password: str) -> Optional[User]:
         user = self.get_by_email(db, email=email)

@@ -1,6 +1,6 @@
 import json
 from typing import Any, List
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException, Response
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
@@ -20,14 +20,14 @@ def create_user(
     """
     Create new user.
     """
-    user = crud.user.get_by_email(db, email=user_in.email)  # get_by_email 구현
+    user = crud.user.get_by_email(db, email=user_in.email)
     if user:
         raise HTTPException(
             status_code=400,
             detail="The user with this username already exists in the system.",
         )
     user = crud.user.create(db, obj_in=user_in)
-    return JSONResponse(
+
+    return Response(
         {"message": "Please check your email to activate your account"}, status_code=201
     )
-
