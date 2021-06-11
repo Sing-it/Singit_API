@@ -7,7 +7,7 @@ from app.core.security import get_password_hash, verify_password
 from app.crud.base import CRUDBase
 from app.model.user import User
 from app.schemas.user import UserCreate, UserPasswordUpdate
-from app.util import Util
+from app.util import s3upload
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
@@ -17,7 +17,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
 
     def create(self, db: Session, *, obj_in: UserCreate) -> User:
         filename = obj_in.email + "_" + str(timegm(datetime.utcnow().utctimetuple()))
-        obj_img_url = Util.s3upload(
+        obj_img_url = s3upload(
             file=obj_in.profile_image, path="/image/user/", filename=filename
         )
         db_obj = User(
