@@ -3,11 +3,11 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from datetime import datetime
 from calendar import timegm
-from app.core.security import get_password_hash, verify_password
+from app.core.security import verify_password
 from app.crud.base import CRUDBase
 from app.model.user import User
 from app.schemas.user import UserCreate, UserPasswordUpdate
-from app.util import s3upload
+from app.util import s3upload, get_hashed_password
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
@@ -22,7 +22,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
         )
         db_obj = User(
             email=obj_in.email,
-            password=obj_in.password,
+            password=get_hashed_password(obj_in.password),
             nickname=obj_in.nickname,
             profile_image=obj_img_url,
             is_active=False,
@@ -36,7 +36,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
         user = self.get_by_email(db, email=email)
         if not user:
             return None
-        if not verify_password(password, user.hashed_password):
+        if not verify_password(password, user.password):
             return None
         return user
 
