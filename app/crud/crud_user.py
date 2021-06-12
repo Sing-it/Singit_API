@@ -3,14 +3,16 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from datetime import datetime
 from calendar import timegm
-from app.core.security import verify_password
 from app.crud.base import CRUDBase
 from app.model.user import User
 from app.schemas.user import UserCreate, UserPasswordUpdate
-from app.util import s3upload, get_hashed_password
+from app.util import s3upload, get_hashed_password, verify_password
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
+    def get(self, db: Session, *, id: int):
+        return db.query(User).filter(User.id == id)
+
     def get_by_email(self, db: Session, *, email: str) -> Optional[User]:
         # in sql: select * from User where email=${email} limit 1;
         return db.query(User).filter(User.email == email).first()
