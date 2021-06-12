@@ -31,3 +31,15 @@ def create_user(
     return Response(
         {"message": "Please check your email to activate your account"}, status_code=201
     )
+
+
+@router.get("/email")
+def check_email(email: str, db: Session = Depends(dependencies.get_db())) -> Any:
+    """
+    이메일 중복 체크 API
+    :param email: 중복 체크할 이메일
+    """
+    user = crud.user.get_by_email(db, email)
+    if user:
+        raise HTTPException(status_code=401, detail="email already exists.")
+    return Response({"message": "valid email"}, status_code=200)
