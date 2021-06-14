@@ -56,4 +56,4 @@ def reset_password(
     user = crud.user.authenticate(db, current_user.email, current_user.password)
     if not user:
         raise HTTPException(status_code=401, detail="wrong password")
-    crud.user.update(db, obj_in.new_password)  # crud에 password 없데이트 기능 추가하기
+    crud.user.update(db, db_obj=current_user, obj_in=obj_in)  # crud에 password 없데이트 기능 추가하기
