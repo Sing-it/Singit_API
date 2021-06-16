@@ -14,7 +14,7 @@ router = APIRouter()
 
 @router.post("/register")
 def create_user(
-    db: Session = Depends(dependencies.get_db()),
+    db: Session = Depends(dependencies.get_db),
     *,
     user_in: schemas.UserCreate,
 ) -> Any:
@@ -35,7 +35,7 @@ def create_user(
 
 
 @router.get("/email")
-def check_email(email: str, db: Session = Depends(dependencies.get_db())) -> Any:
+def check_email(email: str, db: Session = Depends(dependencies.get_db)) -> Any:
     """
     이메일 중복 체크 API
     :param email: 중복 체크할 이메일
@@ -48,7 +48,7 @@ def check_email(email: str, db: Session = Depends(dependencies.get_db())) -> Any
 
 @router.get("/reset-password")
 def reset_password(
-    db: Session = Depends(dependencies.get_db()),
+    db: Session = Depends(dependencies.get_db),
     *,
     obj_in: schemas.UserPasswordUpdate,
     current_user: model.User = Depends(dependencies.get_current_user),
@@ -56,4 +56,6 @@ def reset_password(
     user = crud.user.authenticate(db, current_user.email, current_user.password)
     if not user:
         raise HTTPException(status_code=401, detail="wrong password")
-    crud.user.update(db, db_obj=current_user, obj_in=obj_in)  # crud에 password 없데이트 기능 추가하기
+    crud.user.update(
+        db, db_obj=current_user, obj_in=obj_in
+    )  # crud에 password 없데이트 기능 추가하기

@@ -10,14 +10,15 @@ from app.util import s3upload, get_hashed_password, verify_password
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
-    def get(self, db: Session, *, id: int):
+    def get(self, db: Session, id: int):
+        # in sql: select * from User where id=${id} limit 1;
         return db.query(User).filter(User.id == id)
 
-    def get_by_email(self, db: Session, *, email: str) -> Optional[User]:
+    def get_by_email(self, db: Session, email: str) -> Optional[User]:
         # in sql: select * from User where email=${email} limit 1;
         return db.query(User).filter(User.email == email).first()
 
-    def create(self, db: Session, *, obj_in: UserCreate) -> User:
+    def create(self, db: Session, obj_in: UserCreate) -> User:
         filename = obj_in.email + "_" + str(timegm(datetime.utcnow().utctimetuple()))
         obj_img_url = s3upload(
             file=obj_in.profile_image, path="/image/user/", filename=filename
@@ -35,7 +36,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
         return db_obj
 
     # 로그인 시 사용
-    def authenticate(self, db: Session, *, email: str, password: str) -> Optional[User]:
+    def authenticate(self, db: Session, email: str, password: str) -> Optional[User]:
         user = self.get_by_email(db, email=email)
         if not user:
             return None

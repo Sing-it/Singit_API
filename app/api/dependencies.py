@@ -20,7 +20,7 @@ def get_db() -> Generator:
 
 
 def get_current_user(
-    db: Session = Depends(get_db()), authorization: str = Header(None)
+    db: Session = Depends(get_db), authorization: str = Header(None)
 ) -> model.User:
     try:
         if authorization.split()[0] not in ("jwt", "JWT"):
