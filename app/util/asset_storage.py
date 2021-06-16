@@ -3,7 +3,7 @@ import boto3
 from app.core.config import settings
 
 
-def s3upload(self, file, path: str, filename: str):
+def s3upload(file, path: str, filename: str):
     """
     :param file: 업로드할 파일
     :param path: bucket 내부 path 지정
