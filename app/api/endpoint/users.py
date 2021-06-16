@@ -4,6 +4,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Response
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
+from pydantic.networks import EmailStr
 
 from app import crud, model, schemas
 from app.api import dependencies
@@ -35,7 +36,7 @@ def create_user(
 
 
 @router.get("/email")
-def check_email(email: str, db: Session = Depends(dependencies.get_db)) -> Any:
+def check_email(email: EmailStr, db: Session = Depends(dependencies.get_db)) -> Any:
     """
     이메일 중복 체크 API
     :param email: 중복 체크할 이메일
@@ -43,7 +44,7 @@ def check_email(email: str, db: Session = Depends(dependencies.get_db)) -> Any:
     user = crud.user.get_by_email(db, email)
     if user:
         raise HTTPException(status_code=401, detail="email already exists.")
-    return Response({"message": "valid email"}, status_code=200)
+    return Response(json.dumps({"message": "valid email"}), status_code=200, media_type="application/json")
 
 
 @router.get("/reset-password")
