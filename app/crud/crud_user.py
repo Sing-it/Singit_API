@@ -19,9 +19,9 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
         return db.query(User).filter(User.email == email).first()
 
     def create(self, db: Session, obj_in: UserCreate) -> User:
-        filename = obj_in.email + "_" + str(timegm(datetime.utcnow().utctimetuple()))
+        filename = obj_in.email + "_" + str(timegm(datetime.utcnow().utctimetuple())) + '.png'
         obj_img_url = s3upload(
-            file=obj_in.profile_image, path="/image/user/", filename=filename
+            file=obj_in.profile_image, path="image/user/", filename=filename
         )
         db_obj = User(
             email=obj_in.email,
@@ -30,9 +30,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
             profile_image=obj_img_url,
             is_active=False,
         )
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
+        save_change(db, db_obj)
         return db_obj
 
     # 로그인 시 사용
@@ -66,3 +64,11 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
 
 
 user = CRUDUser(User)
+
+
+def save_change(db: Session, data):
+    try:
+        db.session.add(data)
+        db.session.commit()
+    except Exception as e:
+        raise e
