@@ -1,8 +1,6 @@
 import json
-from typing import Any, List
+from typing import Any
 from fastapi import APIRouter, Body, Depends, HTTPException, Response
-from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from pydantic.networks import EmailStr
 
@@ -16,13 +14,13 @@ router = APIRouter()
 @router.post("/register")
 def create_user(
     db: Session = Depends(dependencies.get_db),
-    *,
-    user_in: schemas.UserCreate,
+    user_in: schemas.UserCreate = Body(...),
 ) -> Any:
     """
     Create new user.
     """
     user = crud.user.get_by_email(db, email=user_in.email)
+
     if user:
         raise HTTPException(
             status_code=400,
@@ -44,7 +42,11 @@ def check_email(email: EmailStr, db: Session = Depends(dependencies.get_db)) -> 
     user = crud.user.get_by_email(db, email)
     if user:
         raise HTTPException(status_code=401, detail="email already exists.")
-    return Response(json.dumps({"message": "valid email"}), status_code=200, media_type="application/json")
+    return Response(
+        json.dumps({"message": "valid email"}),
+        status_code=200,
+        media_type="application/json",
+    )
 
 
 @router.get("/reset-password")

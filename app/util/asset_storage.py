@@ -1,4 +1,5 @@
 import boto3
+import io
 
 from app.core.config import settings
 
@@ -32,10 +33,10 @@ def s3upload(file, path: str, filename: str):
         region = settings.AWS_CONFIG["REGION"]
 
         bucket_name = settings.AWS_CONFIG["BUCKET_NAME"]
-        s3.upload_fileobj(file, bucket_name, path, ExtraArgs={"ACL": "public-read"})
+        s3.upload_fileobj(io.BytesIO(file), bucket_name, filename, ExtraArgs={"ACL": "public-read"})
 
         url = "https://s3-{}.amazonaws.com/{}/{}".format(region, bucket_name, path)
 
     except Exception as e:
-        return e
+        raise e
     return url
