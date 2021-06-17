@@ -1,8 +1,7 @@
 from typing import Optional, Dict, Union, Any
 
 from sqlalchemy.orm import Session
-from datetime import datetime
-from calendar import timegm
+
 from app.crud.base import CRUDBase
 from app.model.user import User
 from app.schemas.user import UserCreate, UserPasswordUpdate
@@ -19,15 +18,11 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
         return db.query(User).filter(User.email == email).first()
 
     def create(self, db: Session, obj_in: UserCreate) -> User:
-        filename = obj_in.email + "_" + str(timegm(datetime.utcnow().utctimetuple())) + '.png'
-        obj_img_url = s3upload(
-            file=obj_in.profile_image, path="image/user/", filename=filename
-        )
         db_obj = User(
             email=obj_in.email,
             password=get_hashed_password(obj_in.password),
             nickname=obj_in.nickname,
-            profile_image=obj_img_url,
+            profile_image=obj_in.profile_image,
             is_active=False,
         )
         save_change(db, db_obj)

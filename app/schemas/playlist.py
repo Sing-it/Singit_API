@@ -2,6 +2,7 @@ from typing import Optional, List
 from pydantic import BaseModel, HttpUrl
 
 from app.schemas.song import SongBaseResult
+from app.core.config import settings
 
 
 class PlaylistBase(BaseModel):
@@ -22,7 +23,7 @@ class PlaylistBaseResult(PlaylistBase):
 
 class PlaylistCreate(PlaylistBase):
     title: str
-    profile_image: str
+    profile_image: HttpUrl = settings.DEFAULT_SONG_PROFILE_IMAGE
 
 
 class PlaylistDetail(PlaylistBase):
