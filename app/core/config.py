@@ -40,6 +40,14 @@ class Settings(BaseSettings):
     # redis setting
     REDIS_HOST = os.getenv("REDIS_HOST")
     REDIS_PORT = os.getenv("REDIS_PORT")
+    # aws setting
+    AWS_CONFIG = {
+        "REGION": os.getenv("REGION"),
+        "ACCESS_KEY_ID": os.getenv("ACCESS_KEY_ID"),
+        "SECRET_KEY": os.getenv("SECRET_KEY"),
+        "BUCKET_NAME": os.getenv("BUCKET_NAME"),
+        "SONG_BUCKET_NAME": os.getenv("SONG_BUCKET_NAME"),
+    }
 
 
 settings = Settings()
