@@ -1,6 +1,7 @@
 from typing import Optional, Dict, Union, Any
 
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.expression import update
 
 from app.crud.base import CRUDBase
 from app.model.user import User
@@ -56,6 +57,12 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
 
     def is_active(self, user: User) -> bool:
         return user.is_active
+
+    def activate(self, user: User) -> Any:
+        if self.is_active(user):
+            return "Already active email"
+        update_data = {"is_active": True}
+        return super().update(db, db_obj=user, obj_in=update_data)
 
 
 user = CRUDUser(User)
