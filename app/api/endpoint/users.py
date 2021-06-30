@@ -3,12 +3,26 @@ from typing import Any
 from fastapi import APIRouter, Body, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from pydantic.networks import EmailStr
+from sqlalchemy.sql.functions import user
 
 from app import crud, model, schemas
 from app.api import dependencies
 
 
 router = APIRouter()
+
+
+@router.get("/{user_id}", response_model=schemas.UserBase)
+def retrieve(user_id: int, db: Session = Depends(dependencies.get_db)) -> Any:
+    """
+    특정 사용자 정보 조회
+    :param user_id: 사용자 인덱스 번호
+    """
+    user_obj = crud.user.get(db, id=user_id)
+
+    if not user_obj:
+        raise HTTPException(status_code=400, detail="invalid user id")
+    return Response(user_obj, status_code=200)
 
 
 @router.post("/register")
@@ -18,7 +32,8 @@ def create_user(
 ) -> Any:
     """
     회원가입 API
-    :param user_in: UserCreate 스키마
+    :param user_in: UserCreate Schema
+    :return: UserBase Schema
     """
     user = crud.user.get_by_email(db, email=user_in.email)
 
@@ -43,11 +58,7 @@ def check_email(email: EmailStr, db: Session = Depends(dependencies.get_db)) -> 
     user = crud.user.get_by_email(db, email)
     if user:
         raise HTTPException(status_code=401, detail="email already exists.")
-    return Response(
-        json.dumps({"message": "valid email"}),
-        status_code=200,
-        media_type="application/json",
-    )
+    return Response({"message": "valid email"}, status_code=200)
 
 
 @router.get("/reset-password")
@@ -66,4 +77,4 @@ def reset_password(
     crud.user.update(
         db, db_obj=current_user, obj_in=obj_in
     )  # crud에 password 없데이트 기능 추가하기
-    return Response({"msg": "password update success"}, status_code=201)
+    return Response({"message": "password update success"}, status_code=201)

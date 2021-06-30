@@ -11,7 +11,7 @@ from app.util import s3upload, get_hashed_password, verify_password
 class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
     def get(self, db: Session, id: int):
         # in sql: select * from User where id=${id} limit 1;
-        return db.query(User).filter(User.id == id)
+        return db.query(User).filter(User.id == id).first()
 
     def get_by_email(self, db: Session, email: str) -> Optional[User]:
         # in sql: select * from User where email=${email} limit 1;
