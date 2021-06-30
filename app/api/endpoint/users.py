@@ -17,7 +17,8 @@ def create_user(
     user_in: schemas.UserCreate = Body(...),
 ) -> Any:
     """
-    Create new user.
+    회원가입 API
+    :param user_in: UserCreate 스키마
     """
     user = crud.user.get_by_email(db, email=user_in.email)
 
@@ -56,9 +57,13 @@ def reset_password(
     obj_in: schemas.UserPasswordUpdate,
     current_user: model.User = Depends(dependencies.get_current_user),
 ) -> Any:
+    """
+    비밀번호 재설정 API
+    """
     user = crud.user.authenticate(db, current_user.email, current_user.password)
     if not user:
         raise HTTPException(status_code=401, detail="wrong password")
     crud.user.update(
         db, db_obj=current_user, obj_in=obj_in
     )  # crud에 password 없데이트 기능 추가하기
+    return Response({"msg": "password update success"}, status_code=201)
