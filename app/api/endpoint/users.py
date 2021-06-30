@@ -78,3 +78,25 @@ def reset_password(
         db, db_obj=current_user, obj_in=obj_in
     )  # crud에 password 없데이트 기능 추가하기
     return Response({"message": "password update success"}, status_code=201)
+
+
+@router.patch("/activate", response_model=schemas.UserBase)
+def activate_account(
+    db: Session = Depends(dependencies.get_db),
+    *,
+    email: str = Body(...),
+    code: int = Body(...),
+) -> Any:
+    """
+    사용자 계정 활성화 API
+    :param email: 활성화시킬 계정의 이메일 주소
+    :param code: 이메일 주소로 보내진 계정 활성화 인증 코드
+    """
+
+    user_obj = crud.user.get_by_email(db, email=email)
+    if not user_obj:
+        raise HTTPException(status_code=400, detail="invalid user email")
+    # redis 연동 모듈 적용
+    # -> email:code 형식으로 redis에 저장된 인증코드 맞는지 확인
+    user_obj = crud.user.activate(user_obj)
+    return Response(user_obj, status_code=201)
