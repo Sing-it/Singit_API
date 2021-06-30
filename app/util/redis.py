@@ -19,5 +19,8 @@ class RedisUtil:
     def add_dataset(self, key: str, value: str) -> Any:
         return self.redis_client.set(key, value)
 
-    def flush_db(self):
+    def flush_db(self) -> Any:
         return self.redis_client.flushdb()
+
+    def check_email_auth_code(self, email: str, code: int) -> bool:
+        return self.get_set(email) == code

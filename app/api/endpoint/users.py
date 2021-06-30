@@ -1,13 +1,11 @@
-import json
 from typing import Any
 from fastapi import APIRouter, Body, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from pydantic.networks import EmailStr
-from sqlalchemy.sql.functions import user
 
 from app import crud, model, schemas
 from app.api import dependencies
-
+from app.util.redis import RedisUtil
 
 router = APIRouter()
 
@@ -96,7 +94,11 @@ def activate_account(
     user_obj = crud.user.get_by_email(db, email=email)
     if not user_obj:
         raise HTTPException(status_code=400, detail="invalid user email")
-    # redis 연동 모듈 적용
-    # -> email:code 형식으로 redis에 저장된 인증코드 맞는지 확인
+    # redis 연동 모듈
+    is_authenticate = RedisUtil().check_email_auth_code(email, code)
+
+    if not is_authenticate:
+        raise HTTPException(status_code=401, detail="invalid auth code")
+
     user_obj = crud.user.activate(user_obj)
     return Response(user_obj, status_code=201)
