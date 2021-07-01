@@ -2,6 +2,7 @@ from typing import Any
 from fastapi import APIRouter, Body, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from pydantic.networks import EmailStr
+from uuid import uuid4
 
 from app import crud, model, schemas
 from app.api import dependencies
@@ -30,8 +31,8 @@ def create_user(
 ) -> Any:
     """
     회원가입 API
-    :param user_in: UserCreate Schema
-    :return: UserBase Schema
+    :param user_in: UserCreate 스키마
+    :return: UserBase 스키마
     """
     user = crud.user.get_by_email(db, email=user_in.email)
 
@@ -40,7 +41,12 @@ def create_user(
             status_code=400,
             detail="The user with this username already exists in the system.",
         )
+    # DB에 is_active=False인 사용자 계정 생성
     user = crud.user.create(db, obj_in=user_in)
+
+    # redis에 key:value = email:auth_code 형식으로 삽입
+    auth_code: str = uuid4()
+    rd_client = RedisUtil().add_dataset(user.email, auth_code, exp=180)
 
     return Response(
         {"message": "Please check your email to activate your account"}, status_code=201
@@ -83,10 +89,10 @@ def activate_account(
     db: Session = Depends(dependencies.get_db),
     *,
     email: str = Body(...),
-    code: int = Body(...),
+    code: str = Body(...),
 ) -> Any:
     """
-    사용자 계정 활성화 API
+    사용자 계정 활성화 API (회원가입에 사용한 이메일 주소로 보내진 인증코드 확인 후 활성화)
     :param email: 활성화시킬 계정의 이메일 주소
     :param code: 이메일 주소로 보내진 계정 활성화 인증 코드
     """
