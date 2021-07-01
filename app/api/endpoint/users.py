@@ -65,23 +65,25 @@ def check_email(email: EmailStr, db: Session = Depends(dependencies.get_db)) -> 
     return Response({"message": "valid email"}, status_code=200)
 
 
-@router.get("/reset-password")
-def reset_password(
-    db: Session = Depends(dependencies.get_db),
-    *,
-    obj_in: schemas.UserPasswordUpdate,
-    current_user: model.User = Depends(dependencies.get_current_user),
-) -> Any:
+# GET /users/email?authenticateEmail=[인증할이메일]
+@router.get("/send-email")
+def send_auth_mail(email: EmailStr, db: Session = Depends(dependencies.get_db)) -> Any:
     """
-    비밀번호 재설정 API
+    계정 활성화 메일 발송 API
+    :param email: 메일을 발송할 이메일 주소
     """
-    user = crud.user.authenticate(db, current_user.email, current_user.password)
+    # 1. 이메일 isvalid
+    # 2. 이메일 발송 -> celery 모듈 필요
+
+    user = crud.user.get_by_email(db, email)
     if not user:
-        raise HTTPException(status_code=401, detail="wrong password")
-    crud.user.update(
-        db, db_obj=current_user, obj_in=obj_in
-    )  # crud에 password 없데이트 기능 추가하기
-    return Response({"message": "password update success"}, status_code=201)
+        raise HTTPException(
+            status_code=401, detail="there's no account with email [{}]".format(email)
+        )
+    is_active: bool = crud.user.is_active(user)
+    if is_active:
+        raise HTTPException(status_code=401, detail="this account already active")
+    # send_mail 모듈 적용
 
 
 @router.patch("/activate", response_model=schemas.UserBase)
@@ -108,3 +110,22 @@ def activate_account(
 
     user_obj = crud.user.activate(user_obj)
     return Response(user_obj, status_code=201)
+
+
+@router.get("/reset-password")
+def reset_password(
+    db: Session = Depends(dependencies.get_db),
+    *,
+    obj_in: schemas.UserPasswordUpdate,
+    current_user: model.User = Depends(dependencies.get_current_user),
+) -> Any:
+    """
+    비밀번호 재설정 API
+    """
+    user = crud.user.authenticate(db, current_user.email, current_user.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="wrong password")
+    crud.user.update(
+        db, db_obj=current_user, obj_in=obj_in
+    )  # crud에 password 없데이트 기능 추가하기
+    return Response({"message": "password update success"}, status_code=201)
