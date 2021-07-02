@@ -11,14 +11,24 @@ from app.util import s3upload, get_hashed_password, verify_password
 
 class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
     def get(self, db: Session, id: int):
+        """
+        index값을 통한 사용자 계정 존재 여부 확인
+        """
         # in sql: select * from User where id=${id} limit 1;
         return db.query(User).filter(User.id == id).first()
 
     def get_by_email(self, db: Session, email: str) -> Optional[User]:
+        """
+        이메일을 통한 사용자 계정 존재 여부 확인
+        """
         # in sql: select * from User where email=${email} limit 1;
         return db.query(User).filter(User.email == email).first()
 
     def create(self, db: Session, obj_in: UserCreate) -> User:
+        """
+        사용자 계정 초기 생성(비활성화 상태)
+        """
+        # in sql: insert into User(email, password, nickname, profile_image, is_active) values({email}, {password}, {nickname}, {profile_image}, False)
         db_obj = User(
             email=obj_in.email,
             password=get_hashed_password(obj_in.password),
@@ -29,8 +39,12 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
         save_change(db, db_obj)
         return db_obj
 
-    # 로그인 시 사용
     def authenticate(self, db: Session, email: str, password: str) -> Optional[User]:
+        """
+        이메일, 비밀번호 일치 여부 확인
+        :param email: 확인할 이메일
+        :param password: 확인할 비밀번호
+        """
         user = self.get_by_email(db, email=email)
         if not user:
             return None
@@ -45,6 +59,9 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
         db_obj: User,
         obj_in: Union[UserPasswordUpdate, Dict[str, Any]]
     ) -> User:
+        """
+        사용자 계정 정보 수정
+        """
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
@@ -56,9 +73,15 @@ class CRUDUser(CRUDBase[User, UserCreate, UserPasswordUpdate]):
         return super().update(db, db_obj=db_obj, obj_in=update_data)
 
     def is_active(self, user: User) -> bool:
+        """
+        사용자 계정 활성화 여부 확인
+        """
         return user.is_active
 
-    def activate(self, user: User) -> Any:
+    def activate(self, db: Session(), user: User) -> Any:
+        """
+        사용자 계정 활성화
+        """
         if self.is_active(user):
             return "Already active email"
         update_data = {"is_active": True}

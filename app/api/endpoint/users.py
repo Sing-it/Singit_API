@@ -108,7 +108,7 @@ def activate_account(
     if not is_authenticate:
         raise HTTPException(status_code=401, detail="invalid auth code")
 
-    user_obj = crud.user.activate(user_obj)
+    user_obj = crud.user.activate(db, user_obj)
     return Response(user_obj, status_code=201)
 
 
