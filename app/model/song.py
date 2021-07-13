@@ -126,7 +126,7 @@ class RemakeUserSong(Base):
     )
     song = relationship(
         "Song",
-        back_populates="RemakeUserSong",  # Song-RemakeUserSong One-to-One relationship
+        backref=backref("RemakeUserSong", uselist=False),  # Song-RemakeUserSong One-to-One relationship
     )
 
     def __repr__(self) -> str:
